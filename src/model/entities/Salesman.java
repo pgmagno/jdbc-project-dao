@@ -8,7 +8,7 @@ public class Salesman implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private Integer Id;
+	private Integer id;
 	private String name;
 	private String email;
 	private Date birthDate;
@@ -22,7 +22,7 @@ public class Salesman implements Serializable {
 	
 	public Salesman(Integer id, String name, String email, Date birthDate, Double baseSalary, Department department) {
 		
-		Id = id;
+		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.birthDate = birthDate;
@@ -31,11 +31,11 @@ public class Salesman implements Serializable {
 	}
 
 	public Integer getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Integer id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getName() {
@@ -80,7 +80,7 @@ public class Salesman implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(Id);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -92,12 +92,12 @@ public class Salesman implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Salesman other = (Salesman) obj;
-		return Objects.equals(Id, other.Id);
+		return Objects.equals(id, other.id);
 	}
 
 	@Override
 	public String toString() {
-		return "Salesman [Id=" + Id + ", name=" + name + ", email=" + email + ", birthDate=" + birthDate
+		return "Salesman [Id=" + id + ", name=" + name + ", email=" + email + ", birthDate=" + birthDate
 				+ ", baseSalary=" + baseSalary + ", department=" + department + "]";
 	}
 

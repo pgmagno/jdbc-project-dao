@@ -57,15 +57,7 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 			rs = st.executeQuery();
 			
 			if(rs.next()) {
-				s = new Salesman(
-						rs.getInt(1),
-						rs.getString(2),
-						rs.getString(3),
-						rs.getDate(4),
-						rs.getDouble(5),
-						new Department(1,rs.getString(7))
-						);				 
-				
+				s = instantiateSalesman(rs);				
 			}
 			return s;								
 			
@@ -86,5 +78,24 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 		return null;
 	}
 	
+	private Salesman instantiateSalesman(ResultSet rs) throws SQLException {
+		return new Salesman(
+				rs.getInt("Id"),
+				rs.getString("Name"),
+				rs.getString("Email"),
+				rs.getDate("BirthDate"),
+				rs.getDouble("BaseSalary"),
+				instantiateDepartment(rs)				
+				);		 
+	}
+	
+	private Department instantiateDepartment(ResultSet rs) throws SQLException {
+		
+		Department d = new Department(
+				rs.getInt("DepartmentId"),
+				rs.getString("Department.name")
+				);		
+		return d;
+	}
 
 }

@@ -10,8 +10,9 @@ public class Program {
 		
 		SalesmanDAO salesmanDAO = DAOfactory.createSalesmanDAO();
 		
-		Salesman s = salesmanDAO.findById(1);
-		
+		System.out.println("::: TEST 01 - FindByID :::");
+		System.out.println("ID: 01");
+		Salesman s = salesmanDAO.findById(1);		
 		System.out.println(s);
 	}
 
