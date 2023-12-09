@@ -126,8 +126,44 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 	
 	@Override
 	public List<Salesman> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+
+		ResultSet rs = null;
+		PreparedStatement st  = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"""
+						SELECT Seller.*, Dept.Name DepartmentName FROM Seller
+						inner join Department Dept
+						on Dept.Id = Seller.DepartmentId
+						order by Name
+					"""
+					);
+			
+			rs = st.executeQuery();			
+			
+			List<Salesman> listOfSalesmen = new ArrayList<>();
+			Map<Integer, Department> map = new HashMap<>();
+			
+			while(rs.next()) {
+				Department dept = map.get(rs.getInt("DepartmentId"));
+				if(dept == null) {
+					dept = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), dept);
+				}
+					Salesman s = instantiateSalesman(rs, dept);
+					listOfSalesmen.add(s);
+				
+			}
+			return listOfSalesmen;
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);			
+		}		
 	}
 	
 	private Salesman instantiateSalesman(ResultSet rs, Department dept) throws SQLException {

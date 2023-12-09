@@ -17,10 +17,16 @@ public class Program {
 		Salesman sm = salesmanDAO.findById(1);		
 		System.out.println(sm);
 		
-		System.out.println("::: TEST 02 - FindByDepartmentID :::");
+		System.out.println("\n::: TEST 02 - FindByDepartmentID :::");
 		System.out.println("ID: 1");
 		List<Salesman> listOfSalesmen = salesmanDAO.findByDepartmentId(1);
 		for (Salesman s : listOfSalesmen) {			
+			System.out.println(s);
+		}
+		
+		System.out.println("\n::: TEST 03 - FindAll :::");
+		List<Salesman> listOfAllSalesmen = salesmanDAO.findAll();
+		for (Salesman s : listOfAllSalesmen) {			
 			System.out.println(s);
 		}
 	}
