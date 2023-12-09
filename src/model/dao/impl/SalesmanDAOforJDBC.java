@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -37,10 +40,13 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
 
 	@Override
 	public Salesman findById(Integer id) {
 
+		Department d = null;
 		Salesman s = null;
 		ResultSet rs = null;
 		PreparedStatement st  = null;
@@ -48,7 +54,7 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 		try {
 			st = conn.prepareStatement(
 					"""
-						SELECT Seller.*, Department.name FROM Seller
+						SELECT Seller.*, Department.name DepartmentName FROM Seller
 						INNER JOIN Department on Department.Id = Seller.DepartmentId
 						WHERE Seller.Id = ? 
 					"""
@@ -57,7 +63,8 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 			rs = st.executeQuery();
 			
 			if(rs.next()) {
-				s = instantiateSalesman(rs);				
+				d = instantiateDepartment(rs);
+				s = instantiateSalesman(rs, d);				
 			}
 			return s;								
 			
@@ -73,19 +80,64 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 	}
 
 	@Override
+	public List<Salesman> findByDepartmentId(Integer id) {
+
+		ResultSet rs = null;
+		PreparedStatement st  = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"""
+						SELECT Seller.*, Dept.Name DepartmentName FROM Seller
+						inner join Department Dept
+						on Dept.Id = Seller.DepartmentId
+						where departmentId = ?
+						order by Name
+					"""
+					);
+			st.setInt(1, id);
+			rs = st.executeQuery();			
+			
+			List<Salesman> listOfSalesmen = new ArrayList<>();
+			Map<Integer, Department> map = new HashMap<>();
+			
+			while(rs.next()) {
+				Department dept = map.get(rs.getInt("DepartmentId"));
+				if(dept == null) {
+					dept = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), dept);
+				}
+					Salesman s = instantiateSalesman(rs, dept);
+					listOfSalesmen.add(s);
+				
+			}
+			return listOfSalesmen;
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+			
+		}
+		
+	}
+	
+	@Override
 	public List<Salesman> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	private Salesman instantiateSalesman(ResultSet rs) throws SQLException {
+	private Salesman instantiateSalesman(ResultSet rs, Department dept) throws SQLException {
 		return new Salesman(
 				rs.getInt("Id"),
 				rs.getString("Name"),
 				rs.getString("Email"),
 				rs.getDate("BirthDate"),
 				rs.getDouble("BaseSalary"),
-				instantiateDepartment(rs)				
+				dept				
 				);		 
 	}
 	
@@ -93,7 +145,7 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 		
 		Department d = new Department(
 				rs.getInt("DepartmentId"),
-				rs.getString("Department.name")
+				rs.getString("DepartmentName")
 				);		
 		return d;
 	}

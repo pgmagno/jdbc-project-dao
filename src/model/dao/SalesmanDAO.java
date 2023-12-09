@@ -9,5 +9,6 @@ public interface SalesmanDAO {
 	void update(Salesman obj);
 	void deleteById(Integer id);
 	Salesman findById(Integer id);
+	List<Salesman> findByDepartmentId(Integer id);
 	List<Salesman> findAll();
 }
