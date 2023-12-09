@@ -1,11 +1,24 @@
 package model.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+import db.DB;
+import db.DbException;
 import model.dao.SalesmanDAO;
+import model.entities.Department;
 import model.entities.Salesman;
 
 public class SalesmanDAOforJDBC implements SalesmanDAO {
+	
+	private Connection conn;
+	
+	public SalesmanDAOforJDBC(Connection conn) {
+		this.conn = conn;
+	}
 
 	@Override
 	public void insert(Salesman obj) {
@@ -27,8 +40,44 @@ public class SalesmanDAOforJDBC implements SalesmanDAO {
 
 	@Override
 	public Salesman findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		Salesman s = null;
+		ResultSet rs = null;
+		PreparedStatement st  = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"""
+						SELECT Seller.*, Department.name FROM Seller
+						INNER JOIN Department on Department.Id = Seller.DepartmentId
+						WHERE Seller.Id = ? 
+					"""
+					);
+			st.setInt(1, id);
+			rs = st.executeQuery();
+			
+			if(rs.next()) {
+				s = new Salesman(
+						rs.getInt(1),
+						rs.getString(2),
+						rs.getString(3),
+						rs.getDate(4),
+						rs.getDouble(5),
+						new Department(1,rs.getString(7))
+						);				 
+				
+			}
+			return s;								
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeResultSet(rs);
+			DB.closeStatement(st);
+			
+		}
+		
 	}
 
 	@Override
