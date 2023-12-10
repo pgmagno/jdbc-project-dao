@@ -48,8 +48,8 @@ public class Program {
 		
 		Salesman mySalesman = new Salesman(
 				null,
-				"Kayo",
-				"kayo.magno@gmail.com",
+				"Chandler",
+				"chandler.bing@gmail.com",
 				date,
 				7000.0,
 				new Department(2, null)
@@ -57,6 +57,28 @@ public class Program {
 		
 		salesmanDAO.insert(mySalesman);
 		System.out.println("New Salesman inserted! ID: " + mySalesman.getId());
+		
+		System.out.println("\n::: TEST 05 - Update :::");
+		
+		Date dateUpdate = null;
+		try {
+			dateUpdate = sdf.parse("08/05/1987");
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Salesman mySalesmanUpdate = new Salesman(
+				13,
+				"Kayo",
+				"kayo.magno@gmail.com",
+				dateUpdate,
+				7000.0,
+				new Department(2, null)
+				);
+		
+		salesmanDAO.update(mySalesmanUpdate);
+		System.out.println("Salesman updated! ID: " + mySalesmanUpdate.getId());
 	}
 
 }
