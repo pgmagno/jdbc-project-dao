@@ -79,6 +79,13 @@ public class Program {
 		
 		salesmanDAO.update(mySalesmanUpdate);
 		System.out.println("Salesman updated! ID: " + mySalesmanUpdate.getId());
+		
+		System.out.println("\n::: TEST 06 - Delete :::");
+		salesmanDAO.deleteById(24);
+		salesmanDAO.deleteById(14);
+		salesmanDAO.deleteById(25);
+		salesmanDAO.deleteById(26);
+		
 	}
 
 }
